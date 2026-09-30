@@ -660,9 +660,8 @@ const CONFIG = {
   // Your business email. Builds from the form get sent here.
   email: "tristanmaneke1@gmail.com",
 
-  // Leave "" to send builds to the email above through FormSubmit (free, no account).
-  // The first time someone sends a build, FormSubmit emails you an activation link. Click it once.
-  formEndpoint: "",
+  // Formspree form that emails every build to you. Leave "" to fall back to FormSubmit.
+  formEndpoint: "https://formspree.io/f/mzezowpw",
 
   // Social links. Leave "" to hide.
   instagram: "",
@@ -1684,7 +1683,7 @@ $("#requestForm").addEventListener("submit", async e => {
     lines.forEach(([k, v]) => payload[k] = v);
     payload["Build link"] = buildUrl();
     if (payload.email) payload._replyto = payload.email;
-    payload._template = "table";
+    if (!CONFIG.formEndpoint) payload._template = "table";
     const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
