@@ -229,7 +229,7 @@ form .full{grid-column:1/-1}
 .gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:30px}
 .gallery figure{margin:0;position:relative;border-radius:16px;overflow:hidden;background:var(--panel);aspect-ratio:4/5}
 .gallery figure.hide{display:none}
-.gallery img{width:100%;height:100%;object-fit:cover}
+.gallery img,.gallery video{width:100%;height:100%;object-fit:cover;display:block}
 .gallery figcaption{position:absolute;left:12px;bottom:12px;font-size:.85rem;background:rgba(10,18,36,.78);padding:5px 10px;border-radius:8px}
 
 /* ---------- services ---------- */
@@ -505,7 +505,7 @@ footer{border-top:1px solid var(--rule);padding:48px 0 calc(48px + env(safe-area
   <!-- GALLERY
        HOW TO ADD YOUR PHOTOS:
        1. Make a folder called "images" in your GitHub repo.
-       2. Upload photos named gallery-1.jpg, gallery-2.jpg ... gallery-6.jpg
+       2. Upload photos named gallery-1.jpg, gallery-2.jpg, gallery-3.jpg and the work-*.mp4 videos
        3. Change the captions below to match each photo.
        This whole section stays hidden until at least one photo exists. -->
   <section class="work" id="work" aria-labelledby="work-title" hidden>
@@ -515,9 +515,9 @@ footer{border-top:1px solid var(--rule);padding:48px 0 calc(48px + env(safe-area
         <figure><img src="images/gallery-1.jpg" alt="Fiber optic strands lit up purple inside a GMC truck cab before trimming"><figcaption>Fibers lit before trimming</figcaption></figure>
         <figure><img src="images/gallery-2.jpg" alt="Finished headliner wrapped in black suede on a stand"><figcaption>Black suede rewrap</figcaption></figure>
         <figure><img src="images/gallery-3.jpg" alt="Back of a headliner board with every star position marked by hand"><figcaption>Every star marked by hand</figcaption></figure>
-        <figure><img src="images/gallery-4.jpg" alt="Truck headliner starlight"><figcaption>Truck starlight</figcaption></figure>
-        <figure><img src="images/gallery-5.jpg" alt="Suede headliner before and after"><figcaption>Before and after</figcaption></figure>
-        <figure><img src="images/gallery-6.jpg" alt="Custom color starlight headliner"><figcaption>Custom color</figcaption></figure>
+        <figure><video src="images/work-fibers.mp4" muted loop playsinline autoplay preload="metadata" aria-label="Fiber optic strands lighting up in different colors"></video><figcaption>Testing the stars</figcaption></figure>
+        <figure><video src="images/work-suede.mp4" muted loop playsinline autoplay preload="metadata" aria-label="Smoothing black suede onto a headliner board"></video><figcaption>Laying the suede</figcaption></figure>
+        <figure><video src="images/work-layout.mp4" muted loop playsinline autoplay preload="metadata" aria-label="Star layout marked across the back of a headliner"></video><figcaption>Planning the star layout</figcaption></figure>
       </div>
     </div>
   </section>
@@ -1690,12 +1690,15 @@ $("#requestForm").addEventListener("submit", async e => {
       body: JSON.stringify(payload)
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.success === false || data.success === "false") throw new Error("not sent");
+    if (!res.ok || data.success === false || data.success === "false") {
+      const why = (data.errors && data.errors.map(x => x.message).join(" ")) || data.error || data.message || ("status " + res.status);
+      throw new Error(why);
+    }
     track("Lead", buildData());
     $("#requestForm").style.display = "none";
     $("#sent").classList.add("show");
-  } catch (_) {
-    err.innerHTML = `Your build didn't go through. <a href="${smsHref(text)}">Text it to us instead</a> or call <a href="tel:${CONFIG.phoneLink}">${CONFIG.phone}</a>.`;
+  } catch (ex) {
+    err.innerHTML = `<small style="opacity:.7">(${esc(ex.message || "network error")})</small><br>Your build didn't go through. <a href="${smsHref(text)}">Text it to us instead</a> or call <a href="tel:${CONFIG.phoneLink}">${CONFIG.phone}</a>.`;
     btn.disabled = false; btn.textContent = "Send my build";
   }
 });
@@ -1719,9 +1722,16 @@ $("#requestForm").addEventListener("submit", async e => {
     else $$("[data-gallery-link]").forEach(a => a.style.display = "none");
   };
   figs.forEach(f => {
-    const img = f.querySelector("img");
-    const ok = () => { shown++; finish(); };
-    const bad = () => { f.classList.add("hide"); finish(); };
+    const img = f.querySelector("img"), vid = f.querySelector("video");
+    let settled = false;
+    const ok = () => { if (settled) return; settled = true; shown++; finish(); };
+    const bad = () => { if (settled) return; settled = true; f.classList.add("hide"); finish(); };
+    if (vid) {
+      if (reduceMotion) { vid.removeAttribute("autoplay"); vid.pause(); }
+      if (vid.readyState >= 1) ok();
+      else { vid.addEventListener("loadedmetadata", ok, { once: true }); vid.addEventListener("error", bad, { once: true }); }
+      return;
+    }
     if (img.complete) (img.naturalWidth ? ok : bad)();
     else { img.addEventListener("load", ok, { once: true }); img.addEventListener("error", bad, { once: true }); }
   });
