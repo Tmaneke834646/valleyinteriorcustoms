@@ -93,6 +93,7 @@ p{margin:0}
 .hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:flex-end;overflow:hidden}
 .hero-photo{position:absolute;inset:0;overflow:hidden;background:#070C19}
 .hero-photo picture,.hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
 .hero-photo picture{opacity:0;animation:heroFade 32s linear infinite;will-change:opacity}
 .hero-photo picture img{animation:heroZoom 32s linear infinite}
 .hero-photo picture:nth-child(1),.hero-photo picture:nth-child(1) img{animation-delay:0s}
@@ -106,7 +107,7 @@ p{margin:0}
   .hero-photo picture:first-child{opacity:1}
 }
 .hero-shade{position:absolute;inset:0;background:
-  linear-gradient(90deg,rgba(10,18,36,.96) 0%,rgba(10,18,36,.84) 40%,rgba(10,18,36,.3) 100%),
+  linear-gradient(90deg,rgba(10,18,36,.95) 0%,rgba(10,18,36,.8) 40%,rgba(10,18,36,.18) 100%),
   linear-gradient(to bottom,rgba(10,18,36,.45),rgba(10,18,36,0) 28%)}
 @media (max-width:760px){
   .hero-shade{background:linear-gradient(to bottom,rgba(10,18,36,.35) 0%,rgba(10,18,36,.55) 38%,rgba(10,18,36,.96) 78%)}
@@ -114,7 +115,11 @@ p{margin:0}
 #sky{position:absolute;inset:0;width:100%;height:100%}
 
 /* ---------- vehicle strip ---------- */
-.fits{padding:34px 0 10px}
+.fits{position:relative;padding:90px 0 90px;overflow:hidden;margin-top:-40px}
+.fits .wrap{position:relative;z-index:2}
+.band-shade{position:absolute;inset:0;background:linear-gradient(to bottom,var(--navy) 0%,rgba(10,18,36,.28) 22%,rgba(10,18,36,.3) 78%,var(--navy) 100%)}
+.fits .fit{background:rgba(15,26,49,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.fits-head h2,.fits-head p{text-shadow:0 2px 18px rgba(0,0,0,.6)}
 .fits-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
 .fits-head h2{font-size:clamp(1.4rem,2.6vw,2rem)}
 .fits-head p{color:var(--muted);font-size:.95rem}
@@ -375,10 +380,8 @@ footer{border-top:1px solid var(--rule);padding:48px 0 calc(48px + env(safe-area
   <!-- HERO -->
   <section class="hero">
     <div class="hero-photo" aria-hidden="true">
-      <picture><source media="(max-width:760px)" srcset="images/hero-truck-tall.jpg"><img src="images/hero-truck.jpg" alt="" fetchpriority="high"></picture>
-      <picture><source media="(max-width:760px)" srcset="images/hero-interior-tall.jpg"><img src="images/hero-interior.jpg" alt="" loading="lazy"></picture>
-      <picture><source media="(max-width:760px)" srcset="images/hero-car-tall.jpg"><img src="images/hero-car.jpg" alt="" loading="lazy"></picture>
-      <picture><source media="(max-width:760px)" srcset="images/hero-classic-tall.jpg"><img src="images/hero-classic.jpg" alt="" loading="lazy"></picture>
+      <video id="heroVideo" class="hero-video" muted loop playsinline autoplay preload="metadata" poster="images/hero-stars-poster.jpg"
+             data-src="images/hero-stars.mp4" data-src-tall="images/hero-stars-tall.mp4"></video>
     </div>
     <div class="hero-shade" aria-hidden="true"></div>
     <canvas id="sky" aria-hidden="true"></canvas>
@@ -395,6 +398,13 @@ footer{border-top:1px solid var(--rule);padding:48px 0 calc(48px + env(safe-area
 
   <!-- VEHICLE STRIP -->
   <section class="fits" aria-labelledby="fits-title">
+    <div class="hero-photo band-photos" aria-hidden="true">
+      <picture><source media="(max-width:760px)" srcset="images/hero-truck-tall.jpg"><img src="images/hero-truck.jpg" alt="" loading="lazy"></picture>
+      <picture><source media="(max-width:760px)" srcset="images/hero-classic-tall.jpg"><img src="images/hero-classic.jpg" alt="" loading="lazy"></picture>
+      <picture><source media="(max-width:760px)" srcset="images/hero-car-tall.jpg"><img src="images/hero-car.jpg" alt="" loading="lazy"></picture>
+      <picture><source media="(max-width:760px)" srcset="images/hero-interior-tall.jpg"><img src="images/hero-interior.jpg" alt="" loading="lazy"></picture>
+    </div>
+    <div class="band-shade" aria-hidden="true"></div>
     <div class="wrap">
       <div class="fits-head">
         <h2 id="fits-title">Built for your ride</h2>
@@ -588,6 +598,9 @@ footer{border-top:1px solid var(--rule);padding:48px 0 calc(48px + env(safe-area
     <div class="wrap">
       <h2 id="work-title">In the shop</h2>
       <div class="gallery">
+        <figure><video src="images/finished-1.mp4" muted loop playsinline autoplay preload="metadata" aria-label="Finished starlight headliner glowing purple and red"></video><figcaption>Finished starlight</figcaption></figure>
+        <figure><video src="images/finished-3.mp4" muted loop playsinline autoplay preload="metadata" aria-label="Starlight headliner with a custom logo in the stars"></video><figcaption>Custom logo in the stars</figcaption></figure>
+        <figure><video src="images/finished-2.mp4" muted loop playsinline autoplay preload="metadata" aria-label="Shooting star streaking across a starlight headliner"></video><figcaption>Shooting stars</figcaption></figure>
         <figure><img src="images/gallery-1.jpg" alt="Fiber optic strands lit up purple inside a GMC truck cab before trimming"><figcaption>Fibers lit before trimming</figcaption></figure>
         <figure><img src="images/gallery-2.jpg" alt="Finished headliner wrapped in black suede on a stand"><figcaption>Black suede rewrap</figcaption></figure>
         <figure><img src="images/gallery-3.jpg" alt="Back of a headliner board with every star position marked by hand"><figcaption>Every star marked by hand</figcaption></figure>
@@ -1916,6 +1929,15 @@ $("#shareBtn").addEventListener("click", shareBuild);
 document.addEventListener("click", e => {
   if (e.target.closest && e.target.closest("[data-share]")) { e.preventDefault(); shareBuild(); }
 });
+
+/* ---------------- hero video ---------------- */
+(function () {
+  const v = $("#heroVideo"); if (!v) return;
+  const tall = window.matchMedia("(max-width:760px)").matches;
+  v.src = tall ? v.dataset.srcTall : v.dataset.src;
+  if (reduceMotion) { v.removeAttribute("autoplay"); v.pause(); }
+  else v.play().catch(() => {});
+})();
 
 /* ---------------- vehicle strip ---------------- */
 $$(".fit").forEach(btn => btn.addEventListener("click", () => {
