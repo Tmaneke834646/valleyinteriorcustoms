@@ -91,7 +91,48 @@ p{margin:0}
 
 /* ---------- hero ---------- */
 .hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:flex-end;overflow:hidden}
+.hero-photo{position:absolute;inset:0;overflow:hidden;background:#070C19}
+.hero-photo picture,.hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%}
+.hero-photo picture{opacity:0;animation:heroFade 32s linear infinite;will-change:opacity}
+.hero-photo picture img{animation:heroZoom 32s linear infinite}
+.hero-photo picture:nth-child(1),.hero-photo picture:nth-child(1) img{animation-delay:0s}
+.hero-photo picture:nth-child(2),.hero-photo picture:nth-child(2) img{animation-delay:8s}
+.hero-photo picture:nth-child(3),.hero-photo picture:nth-child(3) img{animation-delay:16s}
+.hero-photo picture:nth-child(4),.hero-photo picture:nth-child(4) img{animation-delay:24s}
+@keyframes heroFade{0%{opacity:0}6%{opacity:1}25%{opacity:1}31%{opacity:0}100%{opacity:0}}
+@keyframes heroZoom{0%{transform:scale(1.04)}31%{transform:scale(1.12)}100%{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){
+  .hero-photo picture,.hero-photo picture img{animation:none}
+  .hero-photo picture:first-child{opacity:1}
+}
+.hero-shade{position:absolute;inset:0;background:
+  linear-gradient(90deg,rgba(10,18,36,.96) 0%,rgba(10,18,36,.84) 40%,rgba(10,18,36,.3) 100%),
+  linear-gradient(to bottom,rgba(10,18,36,.45),rgba(10,18,36,0) 28%)}
+@media (max-width:760px){
+  .hero-shade{background:linear-gradient(to bottom,rgba(10,18,36,.35) 0%,rgba(10,18,36,.55) 38%,rgba(10,18,36,.96) 78%)}
+}
 #sky{position:absolute;inset:0;width:100%;height:100%}
+
+/* ---------- vehicle strip ---------- */
+.fits{padding:34px 0 10px}
+.fits-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.fits-head h2{font-size:clamp(1.4rem,2.6vw,2rem)}
+.fits-head p{color:var(--muted);font-size:.95rem}
+.fits-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:18px}
+.fit{
+  font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--rule);border-radius:16px;
+  padding:16px 10px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;
+  transition:border-color .15s,background .15s,transform .15s;
+}
+.fit:hover{border-color:var(--ice);background:#13234A;transform:translateY(-2px)}
+.fit svg{width:100%;max-width:150px;height:auto;color:var(--ice)}
+.fit span{font-weight:700;font-stretch:var(--mid);font-size:.95rem}
+@media (max-width:760px){
+  .fits-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .fit{padding:12px 6px 10px}
+  .fit span{font-size:.85rem}
+}
+@media (prefers-reduced-motion:reduce){.fit:hover{transform:none}}
 .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:40%;background:linear-gradient(to bottom,rgba(10,18,36,0),var(--navy))}
 .hero-inner{position:relative;z-index:2;padding:140px 0 76px}
 .hero h1{
@@ -333,6 +374,13 @@ footer{border-top:1px solid var(--rule);padding:48px 0 calc(48px + env(safe-area
 
   <!-- HERO -->
   <section class="hero">
+    <div class="hero-photo" aria-hidden="true">
+      <picture><source media="(max-width:760px)" srcset="images/hero-truck-tall.jpg"><img src="images/hero-truck.jpg" alt="" fetchpriority="high"></picture>
+      <picture><source media="(max-width:760px)" srcset="images/hero-interior-tall.jpg"><img src="images/hero-interior.jpg" alt="" loading="lazy"></picture>
+      <picture><source media="(max-width:760px)" srcset="images/hero-car-tall.jpg"><img src="images/hero-car.jpg" alt="" loading="lazy"></picture>
+      <picture><source media="(max-width:760px)" srcset="images/hero-classic-tall.jpg"><img src="images/hero-classic.jpg" alt="" loading="lazy"></picture>
+    </div>
+    <div class="hero-shade" aria-hidden="true"></div>
     <canvas id="sky" aria-hidden="true"></canvas>
     <div class="wrap hero-inner">
       <h1>Your headliner, built your way.</h1>
@@ -342,6 +390,33 @@ footer{border-top:1px solid var(--rule);padding:48px 0 calc(48px + env(safe-area
         <a class="btn btn-line" href="tel:+12316790778" data-phone-link>Call <span data-phone>231-679-0778</span></a>
       </div>
       <p class="hero-meta">Peoria and the Phoenix metro. Mobile service available.</p>
+    </div>
+  </section>
+
+  <!-- VEHICLE STRIP -->
+  <section class="fits" aria-labelledby="fits-title">
+    <div class="wrap">
+      <div class="fits-head">
+        <h2 id="fits-title">Built for your ride</h2>
+        <p>Trucks, SUVs, sedans, vans and small cars. Tap yours to start.</p>
+      </div>
+      <div class="fits-row">
+        <button class="fit" type="button" data-body="truck" aria-label="Start a build for a truck">
+          <svg viewBox="0 0 120 48" aria-hidden="true"><path fill="currentColor" fill-opacity=".9" d="M4 36 L5 25 Q6 21 13 20 L25 19 L34 9 Q36 7 42 7 L64 7 Q68 7 68 11 L68 20 L114 20 Q116 20 116 23 L116 35 Q116 38 113 38 L4 38 Z"/><path fill="#0A1224" fill-opacity=".85" d="M30 19 L37 11 Q38 10 41 10 L50 10 L50 19 Z M53 10 L62 10 Q65 10 65 13 L65 19 L53 19 Z"/><circle cx="24" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/><circle cx="96" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/></svg><span>Trucks</span>
+        </button>
+        <button class="fit" type="button" data-body="suv" aria-label="Start a build for a suv">
+          <svg viewBox="0 0 120 48" aria-hidden="true"><path fill="currentColor" fill-opacity=".9" d="M4 36 L5 24 Q6 19 14 18 L26 17 L36 8 Q38 6 45 6 L100 6 Q106 6 108 11 L113 19 Q116 21 116 26 L116 35 Q116 38 113 38 L4 38 Z"/><path fill="#0A1224" fill-opacity=".85" d="M32 17 L40 10 Q41 9 44 9 L66 9 L66 17 Z M69 9 L98 9 Q102 9 104 12 L107 17 L69 17 Z"/><circle cx="26" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/><circle cx="94" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/></svg><span>SUVs</span>
+        </button>
+        <button class="fit" type="button" data-body="sedan" aria-label="Start a build for a sedan">
+          <svg viewBox="0 0 120 48" aria-hidden="true"><path fill="currentColor" fill-opacity=".9" d="M4 36 L6 28 Q8 24 18 23 L32 22 L44 12 Q47 10 54 10 L76 10 Q84 10 90 16 L96 22 Q110 23 114 28 L116 35 Q116 38 113 38 L4 38 Z"/><path fill="#0A1224" fill-opacity=".85" d="M38 21 L47 13 Q49 12 53 12 L64 12 L64 21 Z M67 12 L76 12 Q82 12 86 16 L90 21 L67 21 Z"/><circle cx="26" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/><circle cx="94" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/></svg><span>Sedans</span>
+        </button>
+        <button class="fit" type="button" data-body="van" aria-label="Start a build for a van">
+          <svg viewBox="0 0 120 48" aria-hidden="true"><path fill="currentColor" fill-opacity=".9" d="M4 36 L4 12 Q4 6 10 6 L88 6 Q96 6 102 13 L112 24 Q116 27 116 31 L116 35 Q116 38 113 38 L4 38 Z"/><path fill="#0A1224" fill-opacity=".85" d="M10 10 L30 10 L30 20 L10 20 Z M34 10 L58 10 L58 20 L34 20 Z M62 10 L86 10 Q92 10 96 15 L101 20 L62 20 Z"/><circle cx="24" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/><circle cx="94" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/></svg><span>Vans</span>
+        </button>
+        <button class="fit" type="button" data-body="compact" aria-label="Start a build for a small car">
+          <svg viewBox="0 0 120 48" aria-hidden="true"><path fill="currentColor" fill-opacity=".9" d="M10 36 L12 28 Q13 24 22 23 L32 22 L42 13 Q45 11 52 11 L74 11 Q82 11 88 18 L94 23 Q104 24 108 29 L110 35 Q110 38 107 38 L10 38 Z"/><path fill="#0A1224" fill-opacity=".85" d="M37 21 L45 14 Q47 13 51 13 L62 13 L62 21 Z M65 13 L73 13 Q79 13 83 17 L87 21 L65 21 Z"/><circle cx="30" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/><circle cx="90" cy="38" r="8" fill="#0A1224" stroke="currentColor" stroke-width="3"/></svg><span>Small cars</span>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -1027,7 +1102,7 @@ function buildLines(p) {
   const mat = CONFIG.materials.find(m => m.id === state.material);
   const col = CONFIG.fabricColors.find(c => c.id === state.color);
   const sc = CONFIG.starColors.find(c => c.id === state.starColor);
-  const svc = { board: "Bringing the headliner in", full: "Dropping off the vehicle", mobile: "Mobile (we come to them)" }[state.service];
+  const svc = { board: "You bring the headliner", full: "You drop off the vehicle", mobile: "We come to you" }[state.service];
   const fabric = mat.id === "keep" ? "Keep current fabric" : `${mat.name}, ${col && col.call ? "custom color" : col.name}`;
   let starTxt = state.stars ? fmt(state.stars) : "None";
   const starColorTxt = sc.id === "custom" ? state.customStar.toUpperCase() : sc.name;
@@ -1563,7 +1638,7 @@ const Viewer = (() => {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     w = cv.width = Math.round(cv.clientWidth * dpr);
     h = cv.height = Math.round(cv.clientHeight * dpr);
-    const n = Math.round((cv.clientWidth * cv.clientHeight) / 1600);
+    const n = Math.round((cv.clientWidth * cv.clientHeight) / 4200);
     pts = Array.from({ length: n }, () => ({
       x: Math.random() * w, y: Math.random() * h,
       r: .5 + Math.pow(Math.random(), 3) * 2.2, ph: Math.random() * 6.28, sp: .3 + Math.random() * 1.6,
@@ -1572,9 +1647,7 @@ const Viewer = (() => {
     draw(performance.now());
   }
   function draw(t) {
-    const g = ctx.createLinearGradient(0, 0, 0, h);
-    g.addColorStop(0, "#050A17"); g.addColorStop(1, "#0A1224");
-    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    ctx.clearRect(0, 0, w, h);
     ctx.globalCompositeOperation = "lighter";
     const ts = t / 1000;
     for (const p of pts) {
@@ -1843,6 +1916,12 @@ $("#shareBtn").addEventListener("click", shareBuild);
 document.addEventListener("click", e => {
   if (e.target.closest && e.target.closest("[data-share]")) { e.preventDefault(); shareBuild(); }
 });
+
+/* ---------------- vehicle strip ---------------- */
+$$(".fit").forEach(btn => btn.addEventListener("click", () => {
+  if (setRadio("body", btn.dataset.body)) { sync(); renderServices(); render(); }
+  $("#build").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+}));
 
 /* ---------------- go ---------------- */
 initControls();
